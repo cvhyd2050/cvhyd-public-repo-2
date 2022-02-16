@@ -1,0 +1,159 @@
+AWS Real Time Task:
+
+
+=======================================================
+Terraform script--
+VM--L
+Installing  AWS CLI
+Google SDK
+Packman Module
+
+Also Install terrafrom on the Machine using terrafrom script
+
+========================================================================
+
+Task--1( VM Creation)
+
+terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 3.27"
+    }
+  }
+
+  required_version = ">= 0.14.9"
+}
+
+provider "aws" {
+  profile = "default"
+  region  = "ap-southeast-1"
+}
+
+resource "aws_instance" "app_server" {
+  ami           = "ami-0d058fe428540cd89"
+  instance_type = "t2.micro"
+
+  tags = {
+    Name = "ExampleAppServerInstance"
+  }
+}
+======================================================================================
+Task---2(AWS-CLI)
+
+ resource "aws_instance" "app_server" {
+   ami                    = "ami-830c94e3"
+   instance_type          = "t2.micro"
++  vpc_security_group_ids = ["sg-0077..."]
++  subnet_id              = "subnet-923a..."
+ }
+======================================================
+provider "aws" {
+  region = "us-east-1"
+}
+resource "aws_instance" "vm" {
+  ami           = "DUMMY_VALUE_AMI_ID"
+  subnet_id     = "DUMMY_VALUE_SUBNET_ID"
+  instance_type = "t3.micro"
+  tags = {
+    Name = "my-first-tf-node"
+  }
+============================
+module "ec2_instance" {
+  source  = "terraform-aws-modules/ec2-instance/aws"
+  version = "~> 3.27"
+
+  name = "single-instance"
+region  = "ap-southeast-1"
+
+  ami                    = "ami-07a333abf5155fe82"
+  instance_type          = "t2.micro"
+  key_name               = "UTK2"
+  monitoring             = true
+  vpc_security_group_ids = "sg-0f82e1f2713e854a9"
+  subnet_id              = "subnet-25830543"
+
+  tags = {
+    Terraform   = "true"
+    Environment = "dev"
+  }
+}
+=======================================
+
+https://registry.terraform.io/modules/terraform-aws-modules/ec2-instance/aws/latest
+
+======================
+
+module "ec2_instance" {
+  source  = "terraform-aws-modules/ec2-instance/aws"
+  version = "~> 3.0"
+
+  name = "single-instance"
+
+  ami                    = "ami-0c6615d1e95c98aca"
+  instance_type          = "t2.micro"
+  key_name               = "Terraform"
+  monitoring             = true
+  vpc_security_group_ids = ["sg-0cb57c3c24f87da04"]
+  subnet_id              = "subnet-06e3663e2b559a89b"
+
+  tags = {
+    Terraform   = "true"
+    Environment = "dev"
+  }
+}
+
+==================================================================
+Runnin------------------------Task--	1
+terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 3.27"
+    }
+  }
+
+  required_version = ">= 0.14.9"
+}
+
+provider "aws" {
+  profile = "default"
+  region  = "ap-south-1"
+}
+
+resource "aws_instance" "app_server" {
+  ami           = "ami-0c6615d1e95c98aca"
+  instance_type = "t2.micro"
+  key_name               = "Terraform"
+  monitoring             = true
+  vpc_security_group_ids = ["sg-0cb57c3c24f87da04"]
+  subnet_id              = "subnet-06e3663e2b559a89b"
+
+  tags = {
+    Name = "app_server"
+  }
+}
+=================================================================================
+
+Multiple EC2-------------
+
+module "ec2_instance" {
+  source  = "terraform-aws-modules/ec2-instance/aws"
+  version = "~> 3.0"
+
+  for_each = toset(["one", "two", "three"])
+
+  name = "instance-${each.key}"
+
+  ami                    = "ami-ebd02392"
+  instance_type          = "t2.micro"
+  key_name               = "user1"
+  monitoring             = true
+  vpc_security_group_ids = ["sg-12345678"]
+  subnet_id              = "subnet-eddcdzz4"
+
+  tags = {
+    Terraform   = "true"
+    Environment = "dev"
+  }
+}
